@@ -3,18 +3,18 @@
 Our 291 project
 
 ## TODO
--[ ] Implement Login screen
--[ ] Implement Option menu screen
--[ ] Implement Option: Register a birth
--[ ] Implement Option: Register a marriage
--[ ] Implement Option: Renew a vehicle registration
--[ ] Implement Option: Process a bill of sale
--[ ] Implement Option: Process a payment
--[ ] Implement Option: Get a driver abstract
--[ ] Implement Option: Issue a ticket
--[ ] Implement Option: Find a car owner
--[x] Make password not visible while typing
--[ ] Make sure SQL injection cant happen
+- [ ] Implement Login screen
+- [ ] Implement Option menu screen
+- [ ] Implement Option: Register a birth
+- [ ] Implement Option: Register a marriage
+- [ ] Implement Option: Renew a vehicle registration
+- [ ] Implement Option: Process a bill of sale
+- [ ] Implement Option: Process a payment
+- [ ] Implement Option: Get a driver abstract
+- [ ] Implement Option: Issue a ticket
+- [ ] Implement Option: Find a car owner
+- [x] Make password not visible while typing
+- [ ] Make sure SQL injection cant happen
 
 
 Option menu screen:
