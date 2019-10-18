@@ -13,7 +13,7 @@ Our 291 project
 -[ ] Implement Option: Get a driver abstract
 -[ ] Implement Option: Issue a ticket
 -[ ] Implement Option: Find a car owner
--[ ] Make password not visible while typing
+-[x] Make password not visible while typing
 -[ ] Make sure SQL injection cant happen
 
 
