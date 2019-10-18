@@ -2,6 +2,6 @@
 
 (require "login.rkt")
 
-(define user (login-user))
+(define user (login-screen))
 (displayln user)
 

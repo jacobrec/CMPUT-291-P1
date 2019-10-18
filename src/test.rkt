@@ -2,7 +2,7 @@
 
 (require db)
 
-(define run-sql-file db-name sql-file-name
+(define (run-sql-file db-name sql-file-name)
   (define jdb (sqlite3-connect #:database db-name #:mode 'create))
   (for ([stm (string-split (file->string sql-file-name) ";" #:trim? #t)])
     (define stm-stripped (string-trim stm))
