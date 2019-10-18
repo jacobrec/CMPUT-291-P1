@@ -3,6 +3,7 @@
 Our 291 project
 
 ## TODO
+- [ ] **Create Test data** This is super important
 - [ ] Implement Login screen
 - [ ] Implement Option menu screen
 - [ ] Implement Option: Register a birth
