@@ -8,16 +8,19 @@
   (displayln "User not found")
   (login-screen))
 
+(define (test-menu-item m1 m2 option)
+  (or (string=? m1 option)
+      (string=? m2 option)))
+
 (define (login-screen)
-  (displayln "Enter a command:")
+  (displayln "Please sign in to use App:")
   (displayln "1) login")
   (displayln "2) exit")
   (define option (read-line))
-  (cond [(or (string=? option "2") (string=? option "exit"))
-         #f]
-        [(or (string=? option "1") (string=? option "login"))
-         (or (login-user) (user-not-found))]
-        [else (login-screen)]))
+  (cond
+         [(test-menu-item "1" "login" option) (or (login-user) (user-not-found))]
+         [(test-menu-item "2" "exit" option) #f]
+         [else (login-screen)]))
 
 
 (define (login-user)

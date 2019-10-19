@@ -1,7 +1,15 @@
 #lang racket
 
 (require "login.rkt")
+(require "options.rkt")
 
-(define user (login-screen))
-(displayln user)
+(define (welcome)
+  (define user (login-screen))
 
+  ;; If user is false, they gave up and signed out
+  (when user
+    (begin
+      (option-screen (string=? "o" (vector-ref user 2)))
+      (welcome))))
+
+(welcome)

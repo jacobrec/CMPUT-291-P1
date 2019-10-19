@@ -7,5 +7,6 @@
 (define jdb (sqlite3-connect #:database db-name #:mode 'create))
 
 (define (db-signin usr passwd)
-  (query-maybe-row jdb "SELECT * FROM users WHERE uid = ? AND pwd = ?"
-             usr passwd))
+  (query-maybe-row jdb
+    "SELECT * FROM users WHERE uid = ? AND pwd = ?"
+     usr passwd))
