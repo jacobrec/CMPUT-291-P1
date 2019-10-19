@@ -1,7 +1,7 @@
 #lang racket
 
-(require "login.rkt")
-(require "options.rkt")
+(require "screens/login.rkt")
+(require "screens/options.rkt")
 
 (define (welcome)
   (define user (login-screen))

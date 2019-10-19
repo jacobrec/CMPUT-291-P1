@@ -10,7 +10,7 @@
       (query-exec jdb stm-stripped))))
 
 ;;;; Test
-(define db-name "test.db")
-(run-sql-file db-name "tables.sql") ; Create tables
-(run-sql-file db-name "data.sql")   ; Load our test data
+(define db-name "sql/test.db")
+(run-sql-file db-name "sql/tables.sql") ; Create tables
+(run-sql-file db-name "sql/data.sql")   ; Load our test data
 

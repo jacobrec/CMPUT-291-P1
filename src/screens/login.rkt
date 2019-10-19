@@ -1,7 +1,7 @@
 #lang racket
 
-(require "password.rkt")
-(require "sql.rkt")
+(require "../utils/password.rkt")
+(require "../sql.rkt")
 (provide login-screen)
 
 (define (user-not-found)

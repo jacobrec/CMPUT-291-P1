@@ -4,8 +4,8 @@ Our 291 project
 
 ## TODO
 - [ ] **Create Test data** This is super important
-- [ ] Implement Login screen
-- [ ] Implement Option menu screen
+- [x] Implement Login screen
+- [x] Implement Option menu screen
 - [ ] Implement Option: Register a birth
 - [ ] Implement Option: Register a marriage
 - [ ] Implement Option: Renew a vehicle registration

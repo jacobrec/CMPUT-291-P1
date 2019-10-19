@@ -1,6 +1,6 @@
 #lang racket
 
-(require "operations.rkt")
+(require "../operations.rkt")
 (provide option-screen)
 
 (define (test-menu-item m1 m2 option)
