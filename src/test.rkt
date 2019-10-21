@@ -10,7 +10,8 @@
       (query-exec jdb stm-stripped))))
 
 ;;;; Test
-(define db-name "sql/test.db")
-(run-sql-file db-name "sql/tables.sql") ; Create tables
-(run-sql-file db-name "sql/data.sql")   ; Load our test data
+(define db-path (vector-ref (current-command-line-arguments) 0))
+(define db-name (string-append db-path "/test.db"))
+(run-sql-file db-name (string-append db-path "/tables.sql")) ; Create tables
+(run-sql-file db-name (string-append db-path "/data.sql"))   ; Load our test data
 

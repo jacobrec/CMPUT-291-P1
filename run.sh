@@ -1,0 +1,1 @@
+racket src/main.rkt "$@"
