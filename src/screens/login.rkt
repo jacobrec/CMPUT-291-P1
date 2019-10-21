@@ -24,7 +24,6 @@
 
 
 (define (login-user)
-  (printf "Username: ")
-  (define user (read-line))
+  (define user (prompt "Username: "))
   (define passwd (read-password "Password: "))
   (db-signin user passwd))
