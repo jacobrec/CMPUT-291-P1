@@ -16,6 +16,7 @@
   (displayln "Please sign in to use App:")
   (displayln "1) login")
   (displayln "2) exit")
+  (flush-output)
   (define option (read-line))
   (cond
          [(test-menu-item "1" "login" option) (or (login-user) (user-not-found))]

@@ -22,6 +22,7 @@
       (displayln "6) Get a driver abstract")))
   (define sout-num (if is-officer 3 7))
   (printf "~a) logout\n" sout-num)
+  (flush-output)
   (define option (read-line))
   (define is-repeat
     (cond
