@@ -9,7 +9,7 @@
 (define (prompt word)
   (if has-libc
     (display word)
-    (displayln word))
+    (begin (displayln word) (flush-output)))
   (read-line))
 (define read-password prompt)
 (define libm (ffi-lib "/usr/lib/libc-2.30"
