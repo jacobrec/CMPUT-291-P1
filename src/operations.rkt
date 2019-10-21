@@ -1,14 +1,7 @@
 #lang racket
 
 (require "sql.rkt")
-(provide register-a-birth)
-(provide register-a-marriage)
-(provide renew-vehicle-registration)
-(provide process-bill-of-sale)
-(provide process-payement)
-(provide get-driver-abstract)
-(provide issue-ticket)
-(provide find-car-owner)
+(provide (all-defined-out))
 
 
 (define (register-a-birth)
