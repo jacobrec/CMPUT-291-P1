@@ -2,6 +2,9 @@
 
 Our 291 project
 
+To run, go `./test.sh reload` or `./test.sh`
+Reload recreates the database, or creates one if its not there
+
 ## TODO
 - [ ] **Create Test data** This is super important
 - [x] Implement Login screen
