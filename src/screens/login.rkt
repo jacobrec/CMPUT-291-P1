@@ -27,4 +27,7 @@
 (define (login-user)
   (define user (prompt "Username: "))
   (define passwd (read-password "Password: "))
-  (db-signin user passwd))
+
+  (sqlify-maybe-row "src/sql/queries/0_login.sql"
+     `(("usr" . ,user) ("passwd" . ,passwd))))
+
