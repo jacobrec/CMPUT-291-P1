@@ -2,13 +2,16 @@
 
 (require ffi/unsafe)
 (provide read-password)
+(provide prompt)
 
 
 (define has-libc #t)
-(define read-password (lambda (prompt)
-                        (begin
-                          (displayln prompt)
-                          (read-line))))
+(define (prompt word)
+  (if has-libc
+    (display word)
+    (displayln word))
+  (read-line))
+(define read-password prompt)
 (define libm (ffi-lib "/usr/lib/libc-2.30"
                       #:fail (lambda () (set! has-libc #f))))
 
