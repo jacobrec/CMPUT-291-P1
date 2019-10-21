@@ -1,1 +1,1 @@
-SELECT * FROM users WHERE uid = :usr AND pwd = :passwd
+SELECT * FROM users WHERE UPPER(uid) = UPPER(:usr) AND pwd = :passwd
