@@ -1,4 +1,4 @@
 INSERT INTO users VALUES
-    ("jacob", "password", "a", "Jacob", "Reckhard", "Edmonton"),
-    ("testy", "password", "o", "Testy", "McTestface", "Edmonton");
+    ("jacob", "password", "o", "Jacob", "Reckhard", "Edmonton"),
+    ("testy", "password", "a", "Testy", "McTestface", "Edmonton");
 
