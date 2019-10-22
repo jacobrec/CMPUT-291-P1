@@ -2,6 +2,9 @@
 
 (require db)
 (require "utils/sqlifier.rkt")
+(require "utils/io.rkt")
+(provide create-id)
+(provide sqlify-date)
 (provide sqlify-row)
 (provide sqlify-rows)
 (provide sqlify-list)
@@ -10,6 +13,23 @@
 (provide sqlify-maybe-value)
 (provide sqlify-exec)
 (provide sqlify-display)
+(provide get-dict-from-user)
+
+;; TODO: make larger range
+(define (create-id)
+  (random 4294967087))
+
+(define (sqlify-date tdate)
+  (string-append
+    (number->string (date-year tdate))
+    "-"
+    (if (> 10 (date-month tdate))
+        (string-append "0" (number->string (date-month tdate)))
+        (number->string (date-month tdate)))
+    "-"
+    (if (> 10 (date-day tdate))
+        (string-append "0" (number->string (date-day tdate)))
+        (number->string (date-day tdate)))))
 
 (define db-name (vector-ref (current-command-line-arguments) 0))
 (define jdb (sqlite3-connect #:database db-name #:mode 'create))
@@ -41,7 +61,6 @@
   (unless widths
     (set! widths (for/list ([x columns-want]) 15)))
 
-
   (define should-show
     (for/list ([n columns-have])
       (not (empty? (filter
@@ -64,10 +83,14 @@
   (sqlify-display-column
     should-show
     (list->vector columns-have) vwidths)
-  (displayln (make-string
-               (+ (* 2 (length columns-want))
-                  (apply + widths))
-               #\=))
+  (define ends (for/list ([w widths]) 0))
+  (set! ends (list-set (list-set ends 0 -1) (- (length ends) 1) 1))
+  (for ([w widths]
+        [i ends])
+    (define l (if (= i -1) "╞" "╪"))
+    (define r (if (= i 1)  "╡" ""))
+    (display (string-append l (make-string w #\═) r)))
+  (displayln "")
 
   ; Display rows
   (for ([r rows])
@@ -80,14 +103,14 @@
   (for ([t should-show])
     (when t
       (define w (vector-ref widths i))
-      (define n (vector-ref data i))
+      (define n (to-string (vector-ref data i)))
       ;(displayln n)
       (define lw (quotient (- w (string-length n)) 2))
       (define lpad (make-string lw #\ ))
       (define rpad (make-string (- w (string-length n) lw) #\ ))
-      (printf "|~a|" (string-append lpad n rpad)))
+      (printf "│~a" (string-append lpad n rpad)))
     (set! i (+ i 1)))
-  (displayln ""))
+  (displayln "│"))
 
 ;; Example of how to use sql display
 ; (sqlify-display
@@ -96,3 +119,20 @@
 ;   '("First Name" "Last Name" "utype" "city")
 ;   '("First Name" "Last Name")
 ;   '(15 15)))
+
+
+
+(define (get-dict-from-user params-in)
+  (define params-out (make-hash))
+  (for/list ([k (in-dict-keys params-in)]
+             [v (in-dict-values params-in)])
+    (define val (prompt (string-append k ": ")))
+    (dict-set! params-out v val))
+  params-out)
+; (get-dict-from-user '(("Make" . "make") ("Model" . "model")))
+
+(define (to-string arg)
+  (cond
+    ((string? arg) arg)
+    ((number? arg) (number->string arg))
+    (else "")))

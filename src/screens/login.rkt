@@ -1,6 +1,7 @@
 #lang racket
 
 (require "../utils/password.rkt")
+(require "../utils/io.rkt")
 (require "../sql.rkt")
 (provide login-screen)
 
