@@ -1,8 +1,10 @@
 #lang racket
 
 (require db)
+(require racket/date)
 (require "utils/sqlifier.rkt")
 (require "utils/io.rkt")
+
 (provide create-id)
 (provide sqlify-date)
 (provide sqlify-row)
@@ -56,15 +58,12 @@
   (sqlify jdb query-exec file params))
 
 (define (sqlify-display rows columns-have [columns-want #f] [widths #f])
-  (unless columns-want
-    (set! columns-want columns-have))
-  (unless widths
-    (set! widths (for/list ([x columns-want]) 15)))
+  (unless columns-want (set! columns-want columns-have))
+  (unless widths (set! widths (for/list ([x columns-want]) 15)))
 
   (define should-show
     (for/list ([n columns-have])
-      (not (empty? (filter
-                     (lambda (a) (string=? a n))
+      (not (empty? (filter (lambda (a) (string=? a n))
                      columns-want)))))
 
   ; Get widths
@@ -80,8 +79,7 @@
   (define vwidths (list->vector widths))
 
   ; Display header
-  (sqlify-display-column
-    should-show
+  (sqlify-display-column should-show
     (list->vector columns-have) vwidths)
   (define ends (for/list ([w widths]) 0))
   (set! ends (list-set (list-set ends 0 -1) (- (length ends) 1) 1))
@@ -124,10 +122,15 @@
 
 (define (get-dict-from-user params-in)
   (define params-out (make-hash))
-  (for/list ([k (in-dict-keys params-in)]
-             [v (in-dict-values params-in)])
-    (define val (prompt (string-append k ": ")))
-    (dict-set! params-out v val))
+  (for/list ([l params-in])
+    (define name (car l))
+    (define key (cadr l))
+    (define type (caddr l))
+    (define val (prompt-type (string-append name ": ") type))
+    (dict-set! params-out key val)
+    (when (and (string=? type "date-or-today")
+               (not (non-empty-string? val)))
+      (dict-set! params-out key (sqlify-date (current-date)))))
   params-out)
 ; (get-dict-from-user '(("Make" . "make") ("Model" . "model")))
 
@@ -136,3 +139,4 @@
     ((string? arg) arg)
     ((number? arg) (number->string arg))
     (else "")))
+
