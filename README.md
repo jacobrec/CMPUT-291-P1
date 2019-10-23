@@ -15,10 +15,10 @@ Reload recreates the database, or creates one if its not there
 - [ ] Implement Option: Process a bill of sale
 - [ ] Implement Option: Process a payment
 - [ ] Implement Option: Get a driver abstract
-- [ ] Implement Option: Issue a ticket
+- [x] Implement Option: Issue a ticket
 - [ ] Implement Option: Find a car owner
 - [x] Make password not visible while typing
-- [ ] Make sure SQL injection cant happen
+- [x] Make sure SQL injection cant happen
 
 
 Option menu screen:
