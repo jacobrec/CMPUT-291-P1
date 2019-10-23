@@ -4,10 +4,6 @@
 (require "../utils/screen.rkt")
 (provide option-screen)
 
-(define (test-menu-item m1 m2 option)
-  (or (string=? m1 option)
-      (string=? m2 option)))
-
 (define (officer-screen)
   (screen "Enter a command:"
     `(("Issue a ticket" . ,issue-ticket)
