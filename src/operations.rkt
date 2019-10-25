@@ -45,6 +45,7 @@
       (sqlify-exec "src/sql/queries/7_issue_ticket.sql" params)))
 
   (unless regInfo
+    (displayln "Registration not found, try again")
     (issue-ticket)))
 
 

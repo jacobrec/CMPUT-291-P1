@@ -36,8 +36,9 @@
 
 (define (prompt-type word type [show-err #f])
   (when show-err
-    (display "Invalid input for type: ")
-    (displayln type))
+   (cond [(string=? "date" type) (displayln "Invalid input for date, enter YYYY-MM-DD")]
+         [(string=? "date-or-today" type) (displayln "Invalid input for date, enter YYYY-MM-DD or leave blank to get todays date")]
+         [else (begin (display "Invalid input for type: ") (displayln type))]))
  (define val (prompt word))
  (cond [(and (string=? "date" type) (not (validate-date val))) (prompt-type word type #t)]
        [(and (string=? "date-or-today" type) (not (validate-date-or-today val))) (prompt-type word type #t)]
@@ -51,9 +52,9 @@
   (string->number input 10 'number-or-false))
 
 (define (validate-date input)
-  (regexp-match-exact? #px"\\d\\d\\d\\d-((1[012])|(0\\d))-(([012]\\d)|(3[01]))" input))
+  (regexp-match-exact? #px"\\d\\d\\d\\d-((1[012])|(0[12345679]))-(([012]\\d)|(3[01]))" input))
 
 (define (validate-date-or-today input)
   (or
     (not (non-empty-string? input))
-    (regexp-match-exact? #px"\\d\\d\\d\\d-((1[012])|(0\\d))-(([012]\\d)|(3[01]))" input)))
+    (validate-date input)))
