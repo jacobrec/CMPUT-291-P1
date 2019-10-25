@@ -49,4 +49,31 @@
 
 
 (define (find-car-owner)
-  void)
+  (define returned-columns
+   '("Make" "Model" "Color" "Year" "Plate" "Registration Date" "Expiry Date" "First Name" "Last Name"))
+  (define returned-lengths
+    '(15 15 15 6 9 20 20 15 15))
+  (define params
+      (get-dict-from-user
+        '(("Make" "make" "text-ish")
+          ("Model" "model" "text-ish")
+          ("Color" "color" "text-ish")
+          ("Year" "year" "number-ish")
+          ("Plate" "plate" "text-ish"))))
+  (define data
+    (sqlify-rows "src/sql/queries/8_find_cars.sql"
+      params))
+
+  (define used-columns '("Make" "Model" "Color" "Year" "Plate"))
+
+  (if (> (length data) 4)
+    (sqlify-select-and-expand data
+      returned-columns
+      used-columns
+      returned-lengths
+      returned-columns)
+    (sqlify-display data
+      returned-columns
+      returned-columns
+      returned-lengths)))
+

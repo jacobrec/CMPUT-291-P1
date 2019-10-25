@@ -15,6 +15,7 @@
 (provide sqlify-maybe-value)
 (provide sqlify-exec)
 (provide sqlify-display)
+(provide sqlify-select-and-expand)
 (provide get-dict-from-user)
 
 ;; TODO: make larger range
@@ -60,6 +61,7 @@
 (define (sqlify-display rows columns-have [columns-want #f] [widths #f])
   (unless columns-want (set! columns-want columns-have))
   (unless widths (set! widths (for/list ([x columns-want]) 15)))
+  (set! widths (take widths (length columns-want)))
 
   (define should-show
     (for/list ([n columns-have])
@@ -82,13 +84,13 @@
   (sqlify-display-column should-show
     (list->vector columns-have) vwidths)
   (define ends (for/list ([w widths]) 0))
-  (set! ends (list-set (list-set ends 0 -1) (- (length ends) 1) 1))
+  (set! ends (list-set ends 0 -1))
   (for ([w widths]
         [i ends])
-    (define l (if (= i -1) "╞" "╪"))
-    (define r (if (= i 1)  "╡" ""))
-    (display (string-append l (make-string w #\═) r)))
-  (displayln "")
+    (when (> w 0)
+      (define l (if (= i -1) "╞" "╪"))
+      (display (string-append l (make-string w #\═)))))
+  (displayln "╡")
 
   ; Display rows
   (for ([r rows])
@@ -117,6 +119,23 @@
 ;   '("First Name" "Last Name" "utype" "city")
 ;   '("First Name" "Last Name")
 ;   '(15 15)))
+
+;; TODO: make this work
+(define (sqlify-select-and-expand data have-columns want-columns widths expanded-columns)
+  (define row-have-columns (cons "Row" have-columns))
+  (define row-want-columns (cons "Row" want-columns))
+  (define row-widths (cons 8 widths))
+  (define row-data
+    (for/list ([r data]
+               [i (range (length data))])
+      (vector-append (vector (+ i 1)) r)))
+  (sqlify-display row-data row-have-columns row-want-columns row-widths)
+  (define row
+    (prompt-number-in-range "Select a row to get more info: "
+      1 (length data)))
+  (sqlify-display (list (list-ref data (- row 1)))
+    have-columns expanded-columns widths))
+
 
 
 
