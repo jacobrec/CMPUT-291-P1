@@ -6,18 +6,18 @@
 
 (define (officer-screen)
   (screen "Enter a command:"
-    `(("Issue a ticket" . ,issue-ticket)
-      ("Find a car owner" . ,find-car-owner)
+    `(("issue a ticket" . ,issue-ticket)
+      ("find a car owner" . ,find-car-owner)
       ("signout" . ,(lambda () #f)))))
 
 (define (agent-screen)
   (screen "Enter a command:"
-    `(("Register a birth" . ,register-a-birth)
-      ("Register a marriage" . ,register-a-marriage)
-      ("Renew a vehicle registration" . ,renew-vehicle-registration)
-      ("Process a bill of sale" . ,process-bill-of-sale)
-      ("Process a payment" . ,process-payement)
-      ("Get a driver abstract" . ,get-driver-abstract)
+    `(("register a birth" . ,register-a-birth)
+      ("register a marriage" . ,register-a-marriage)
+      ("renew a vehicle registration" . ,renew-vehicle-registration)
+      ("process a bill of sale" . ,process-bill-of-sale)
+      ("process a payment" . ,process-payement)
+      ("get a driver abstract" . ,get-driver-abstract)
       ("signout" . ,(lambda () #f)))))
 
 

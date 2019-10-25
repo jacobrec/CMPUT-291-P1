@@ -4,7 +4,8 @@
 
 (define (screen title options [show-err #f])
   (when show-err
-    (displayln "Invalid option"))
+    (displayln "Invalid option")
+    (displayln "Enter valid command number or full command name"))
   (displayln title)
   (for ([o options]
         [i (range (length options))])
@@ -13,10 +14,10 @@
     (displayln (car o)))
   (flush-output)
 
-  (define val (read-line))
+  (define val (string-downcase (read-line)))
   (define nval (string->number val 10 'number-or-false))
   (define fn
-    (if (and nval (>= (length options) nval))
+    (if (and nval (> nval 0) (>= (length options) nval))
      (cdr (list-ref options (- nval 1)))
      (and (dict-has-key? options val) (dict-ref options val))))
 
