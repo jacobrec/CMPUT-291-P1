@@ -1,0 +1,3 @@
+-- User provides an existing registration number
+-- System sets the new expiry date to one year from today's date if the current registration has expired or expires today
+-- Otherwise, set the new expiry date to to one year after the current expiry date
