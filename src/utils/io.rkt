@@ -3,6 +3,7 @@
 (provide prompt)
 (provide prompt-type)
 (provide confirm)
+(provide prompt-number-in-range)
 
 (define (prompt word)
   (display word)
@@ -24,6 +25,15 @@
     [else (get-confirm #t)]))
 
 
+
+(define (prompt-number-in-range word lower upper [show-err #f])
+  (when show-err
+    (printf "Please enter a number from ~a to ~a~%" lower upper))
+  (define n (string->number (prompt-type word "number")))
+  (if (or (> n upper) (< n lower))
+    (prompt-number-in-range word lower upper #t)
+    n))
+
 (define (prompt-type word type [show-err #f])
   (when show-err
     (display "Invalid input for type: ")
@@ -32,11 +42,10 @@
  (cond [(and (string=? "date" type) (not (validate-date val))) (prompt-type word type #t)]
        [(and (string=? "date-or-today" type) (not (validate-date-or-today val))) (prompt-type word type #t)]
        [(and (string=? "number" type) (not (validate-number val))) (prompt-type word type #t)]
-       [(and (string=? "text" type) (not (validate-text val))) (prompt-type word type #t)]
+       [(string=? "number-ish" type) (if (validate-number val) val (if (non-empty-string? val) (prompt-type word type #t) "%"))]
+       [(string=? "text" type) val]
+       [(string=? "text-ish" type) (string-append "%" val "%")]
        [else val]))
-
-(define (validate-text input)
-  #t)
 
 (define (validate-number input)
   (string->number input 10 'number-or-false))
