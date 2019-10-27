@@ -5,10 +5,10 @@
 (provide (all-defined-out))
 
 
-(define (register-a-birth)
+(define (register-a-birth city)
   void)
 
-(define (register-a-marriage)
+(define (register-a-marriage city)
   void)
 
 (define (renew-vehicle-registration)

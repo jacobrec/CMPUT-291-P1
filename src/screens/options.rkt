@@ -10,10 +10,10 @@
       ("find a car owner" . ,find-car-owner)
       ("signout" . ,(lambda () #f)))))
 
-(define (agent-screen)
+(define (agent-screen city)
   (screen "Enter a command:"
-    `(("register a birth" . ,register-a-birth)
-      ("register a marriage" . ,register-a-marriage)
+    `(("register a birth" . ,(lambda () (register-a-birth city)))
+      ("register a marriage" . ,(lambda () (register-a-marriage city)))
       ("renew a vehicle registration" . ,renew-vehicle-registration)
       ("process a bill of sale" . ,process-bill-of-sale)
       ("process a payment" . ,process-payement)
@@ -21,9 +21,9 @@
       ("signout" . ,(lambda () #f)))))
 
 
-(define (option-screen is-officer)
+(define (option-screen is-officer city)
   (and (if is-officer
          (officer-screen)
-         (agent-screen))
-       (option-screen is-officer)))
+         (agent-screen city))
+       (option-screen is-officer city)))
 
