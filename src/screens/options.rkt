@@ -16,7 +16,7 @@
       ("register a marriage" . ,register-a-marriage)
       ("renew a vehicle registration" . ,renew-vehicle-registration)
       ("process a bill of sale" . ,process-bill-of-sale)
-      ("process a payment" . ,process-payement)
+      ("process a payment" . ,process-payment)
       ("get a driver abstract" . ,get-driver-abstract)
       ("signout" . ,(lambda () #f)))))
 
