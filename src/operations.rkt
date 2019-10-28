@@ -4,9 +4,18 @@
 (require "utils/io.rkt")
 (provide (all-defined-out))
 
-
 (define (register-a-birth city)
-  void)
+  (define regParams (get-dict-from-user '(("First Name" "n_fname" "text-not-null")
+					 ("Last Name" "n_lname" "text-not-null")
+					 ("Gender" "n_gender" "gender")
+					 ("Birth Date" "bdate" "date")
+					 ("Mother's First Name" "m_fname" "text-not-null")
+					 ("Mother's Last Name" "m_lname" "text-not-null")
+					 ("Father's First Name" "f_fname" "text-not-null")
+					 ("Father's Last Name" "f_lname" "text-not-null"))))
+  (dict-set! regParams "regno" (create-id))
+  (dict-set! regParams "regplace" city)
+  (sqlify-exec "src/sql/queries/1_register_birth.sql" regParams))
 
 (define (register-a-marriage city)
   void)
