@@ -2,6 +2,7 @@
 
 (require db)
 (require racket/date)
+(require racket/random)
 (require "utils/sqlifier.rkt")
 (require "utils/io.rkt")
 
@@ -18,9 +19,13 @@
 (provide sqlify-select-and-expand)
 (provide get-dict-from-user)
 
-;; TODO: make larger range
 (define (create-id)
-  (random 4294967087))
+  (define byt (crypto-random-bytes 16))
+  (define res 0)
+  (for ([b (bytes->list byt)])
+    (set! res (bitwise-ior b (arithmetic-shift res 8))))
+  res)
+
 
 (define (sqlify-date tdate)
   (string-append
