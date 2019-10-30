@@ -2,8 +2,10 @@
 
 (require db)
 (require racket/date)
+(require racket/random)
 (require "utils/sqlifier.rkt")
 (require "utils/io.rkt")
+(require "utils/iterutils.rkt")
 
 (provide create-id)
 (provide sqlify-date)
@@ -18,9 +20,16 @@
 (provide sqlify-select-and-expand)
 (provide get-dict-from-user)
 
-;; TODO: make larger range
+(provide sqlify-truncate-text)
+(provide sqlify-wrap-text)
+
 (define (create-id)
-  (random 4294967087))
+  (define byt (crypto-random-bytes 16))
+  (define res 0)
+  (for ([b (bytes->list byt)])
+    (set! res (bitwise-ior b (arithmetic-shift res 8))))
+  res)
+
 
 (define (sqlify-date tdate)
   (string-append
@@ -58,7 +67,7 @@
 (define (sqlify-exec file params)
   (sqlify jdb query-exec file params))
 
-(define (sqlify-display rows columns-have [columns-want #f] [widths #f])
+(define (sqlify-display rows columns-have [columns-want #f] [widths #f] #:print-styler [printer sqlify-truncate-text])
   (unless columns-want (set! columns-want columns-have))
   (unless widths (set! widths (for/list ([x columns-want]) 15)))
   (set! widths (take widths (length columns-want)))
@@ -81,8 +90,8 @@
   (define vwidths (list->vector widths))
 
   ; Display header
-  (sqlify-display-column should-show
-    (list->vector columns-have) vwidths)
+  (sqlify-display-column should-show ;should-show needs fixing, I think
+    (list->vector columns-have) vwidths printer)
   (define ends (for/list ([w widths]) 0))
   (set! ends (list-set ends 0 -1))
   (for ([w widths]
@@ -94,23 +103,32 @@
 
   ; Display rows
   (for ([r rows])
-    (sqlify-display-column should-show r vwidths)))
+    (sqlify-display-column should-show r vwidths printer)))
 
 
-(define (sqlify-display-column should-show data widths)
+(define (sqlify-display-column should-show data widths printer)
   (define i 0)
   ; Display column
-  (for ([t should-show])
-    (when t
-      (define w (vector-ref widths i))
-      (define n (to-string (vector-ref data i)))
-      ;(displayln n)
-      (define lw (quotient (- w (string-length n)) 2))
-      (define lpad (make-string lw #\ ))
-      (define rpad (make-string (- w (string-length n) lw) #\ ))
-      (printf "│~a" (string-append lpad n rpad)))
-    (set! i (+ i 1)))
-  (displayln "│"))
+  (define-values (row fills)
+    (for/lists (printers fill) ([t should-show]
+                                [w widths]
+                                [n (sequence-map to-string data)])
+      (values (printer n w) (make-string w #\ ))))
+  (for ([line (apply zip-longest #f row)])
+    (for ([col line][f fills]) (printf "│~a" (if col col f) ))
+    (displayln "│")))
+
+(define (sqlify-wrap-text text width)
+  (map (lambda (x) (car (sqlify-truncate-text x width))) (string-split text)))
+
+(define (sqlify-truncate-text text width)
+  (define lw (quotient (- width (string-length text)) 2))
+  (if (<= lw 0)
+    (parameterize ([error-print-width width]) (cons (format "~.a" text) '()))
+    (let ([lpad (make-string lw #\ )]
+          [rpad (make-string (- width (string-length text) lw) #\ )])
+      (cons (string-append lpad text rpad) '())
+    )))
 
 ;; Example of how to use sql display
 ; (sqlify-display

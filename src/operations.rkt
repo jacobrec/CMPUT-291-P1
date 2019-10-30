@@ -26,8 +26,15 @@
 (define (process-bill-of-sale)
   void)
 
-(define (process-payement)
-  void)
+(define (process-payment)
+  (define tickParams (get-dict-from-user '(("Ticket Number" "tno" "number"))))
+  (define tick (sqlify-maybe-row "src/sql/queries/5_get_ticket.sql" tickParams))
+  (displayln tick)
+  (when tick (sqlify-display (list tick) '("Registration" "Fine" "Violation" "Date")))
+  (when (confirm "Make Payment")
+    (define pParams '())
+    (sqlify-exec "src/sql/queries/5_make_payment.sql" pParams))
+  )
 
 (define (get-driver-abstract)
   void)
