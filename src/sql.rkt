@@ -2,7 +2,7 @@
 
 (require db)
 (require racket/date)
-(require racket/generator)
+(require racket/random)
 (require "utils/sqlifier.rkt")
 (require "utils/io.rkt")
 (require "utils/iterutils.rkt")
@@ -23,9 +23,13 @@
 (provide sqlify-truncate-text)
 (provide sqlify-wrap-text)
 
-;; TODO: make larger range
 (define (create-id)
-  (random 4294967087))
+  (define byt (crypto-random-bytes 16))
+  (define res 0)
+  (for ([b (bytes->list byt)])
+    (set! res (bitwise-ior b (arithmetic-shift res 8))))
+  res)
+
 
 (define (sqlify-date tdate)
   (string-append
@@ -110,9 +114,6 @@
                                 [w widths]
                                 [n (sequence-map to-string data)])
       (values (printer n w) (make-string w #\ ))))
-    ;(when t (printf "│~a" (printer n w))))
-  ;(define row2 (cons '("a" "b" "c") (cons '("element") row)))
-  ;(displayln row2)
   (for ([line (apply zip-longest #f row)])
     (for ([col line][f fills]) (printf "│~a" (if col col f) ))
     (displayln "│")))
