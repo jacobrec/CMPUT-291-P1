@@ -5,6 +5,7 @@
 (require racket/generator)
 (require "utils/sqlifier.rkt")
 (require "utils/io.rkt")
+(require "utils/iterutils.rkt")
 
 (provide create-id)
 (provide sqlify-date)
@@ -85,7 +86,7 @@
   (define vwidths (list->vector widths))
 
   ; Display header
-  (sqlify-display-column should-show
+  (sqlify-display-column should-show ;should-show needs fixing, I think
     (list->vector columns-have) vwidths printer)
   (define ends (for/list ([w widths]) 0))
   (set! ends (list-set ends 0 -1))
@@ -104,24 +105,29 @@
 (define (sqlify-display-column should-show data widths printer)
   (define i 0)
   ; Display column
-  (for ([t should-show])
-    (when t
-      (define w (vector-ref widths i))
-      (define n (to-string (vector-ref data i)))
-      (printf "│~a" (printer n w)))
-    (set! i (+ i 1)))
-  (displayln "│"))
+  (define-values (row fills)
+    (for/lists (printers fill) ([t should-show]
+                                [w widths]
+                                [n (sequence-map to-string data)])
+      (values (printer n w) (make-string w #\ ))))
+    ;(when t (printf "│~a" (printer n w))))
+  ;(define row2 (cons '("a" "b" "c") (cons '("element") row)))
+  ;(displayln row2)
+  (for ([line (apply zip-longest #f row)])
+    (for ([col line][f fills]) (printf "│~a" (if col col f) ))
+    (displayln "│")))
 
 (define (sqlify-wrap-text text width)
-  "1")
+  (map (lambda (x) (car (sqlify-truncate-text x width))) (string-split text)))
 
 (define (sqlify-truncate-text text width)
   (define lw (quotient (- width (string-length text)) 2))
   (if (<= lw 0)
-    (parameterize ([error-print-width width]) (format "~.a" text))
+    (parameterize ([error-print-width width]) (cons (format "~.a" text) '()))
     (let ([lpad (make-string lw #\ )]
           [rpad (make-string (- width (string-length text) lw) #\ )])
-      (string-append lpad text rpad))))
+      (cons (string-append lpad text rpad) '())
+    )))
 
 ;; Example of how to use sql display
 ; (sqlify-display
