@@ -11,4 +11,4 @@
 ; (displayln (read-password "Prompt:"))
 (set! read-password
   (get-ffi-obj 'getpass libm (_fun _string/utf-8 -> _string/utf-8)
-         (lambda () (prompt))))
+    (lambda () prompt)))
