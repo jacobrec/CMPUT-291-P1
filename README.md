@@ -11,12 +11,12 @@ Reload recreates the database, or creates one if its not there
 - [x] Implement Option menu screen
 - [ ] Implement Option: Register a birth
 - [ ] Implement Option: Register a marriage
-- [ ] Implement Option: Renew a vehicle registration
+- [x] Implement Option: Renew a vehicle registration
 - [ ] Implement Option: Process a bill of sale
 - [ ] Implement Option: Process a payment
 - [ ] Implement Option: Get a driver abstract
 - [x] Implement Option: Issue a ticket
-- [ ] Implement Option: Find a car owner
+- [x] Implement Option: Find a car owner
 - [x] Make password not visible while typing
 - [x] Make sure SQL injection cant happen
 
