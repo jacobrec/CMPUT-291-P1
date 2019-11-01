@@ -6,13 +6,13 @@
 
 (define (register-a-birth city)
   (define regParams (get-dict-from-user '(("First Name" "n_fname" "text-not-null")
-					 ("Last Name" "n_lname" "text-not-null")
-					 ("Gender" "n_gender" "gender")
-					 ("Birth Date" "bdate" "date")
-					 ("Mother's First Name" "m_fname" "text-not-null")
-					 ("Mother's Last Name" "m_lname" "text-not-null")
-					 ("Father's First Name" "f_fname" "text-not-null")
-					 ("Father's Last Name" "f_lname" "text-not-null"))))
+                                          ("Last Name" "n_lname" "text-not-null")
+                                          ("Gender" "n_gender" "gender")
+                                          ("Birth Date" "bdate" "date")
+                                          ("Mother's First Name" "m_fname" "text-not-null")
+                                          ("Mother's Last Name" "m_lname" "text-not-null")
+                                          ("Father's First Name" "f_fname" "text-not-null")
+                                          ("Father's Last Name" "f_lname" "text-not-null"))))
   (dict-set! regParams "regno" (create-id))
   (dict-set! regParams "regplace" city)
   (sqlify-exec "src/sql/queries/1_register_birth.sql" regParams))
@@ -21,7 +21,20 @@
   void)
 
 (define (renew-vehicle-registration)
-  void)
+  (define regParams (get-dict-from-user '(("Registration Number" "regno" "number"))))
+  (sqlify-exec "src/sql/queries/3_renew_vehicle.sql"
+    regParams)
+
+  (define data
+    (sqlify-maybe-row "src/sql/queries/3_return_vehicle.sql"
+      regParams))
+
+  (if data
+    (sqlify-display (list data)
+      '("Registration Number" "First Name" "Last Name" "Expiry Date")
+      '("Registration Number" "First Name" "Last Name" "Expiry Date")
+      '(22 20 20 20))
+    (displayln "No registration found")))
 
 (define (process-bill-of-sale)
   void)
@@ -33,8 +46,8 @@
   (when tick (sqlify-display (list tick) '("Registration" "Fine" "Violation" "Date")))
   (when (confirm "Make Payment")
     (define pParams '())
-    (sqlify-exec "src/sql/queries/5_make_payment.sql" pParams))
-  )
+    (sqlify-exec "src/sql/queries/5_make_payment.sql" pParams)))
+
 
 (define (get-driver-abstract)
   void)

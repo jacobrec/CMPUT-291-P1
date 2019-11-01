@@ -82,12 +82,13 @@
     (define ws widths)
     (set! widths
       (for/list ([s should-show])
-        (define x 0)
+        (define x 20)
         (when s
           (set! x (car ws))
           (set! ws (cdr ws)))
         x)))
   (define vwidths (list->vector widths))
+  (displayln widths)
 
   ; Display header
   (sqlify-display-column should-show ;should-show needs fixing, I think
@@ -115,7 +116,7 @@
                                 [n (sequence-map to-string data)])
       (values (printer n w) (make-string w #\ ))))
   (for ([line (apply zip-longest #f row)])
-    (for ([col line][f fills]) (printf "│~a" (if col col f) ))
+    (for ([col line][f fills]) (printf "│~a" (if col col f)))
     (displayln "│")))
 
 (define (sqlify-wrap-text text width)
@@ -127,8 +128,8 @@
     (parameterize ([error-print-width width]) (cons (format "~.a" text) '()))
     (let ([lpad (make-string lw #\ )]
           [rpad (make-string (- width (string-length text) lw) #\ )])
-      (cons (string-append lpad text rpad) '())
-    )))
+      (cons (string-append lpad text rpad) '()))))
+
 
 ;; Example of how to use sql display
 ; (sqlify-display
@@ -138,7 +139,6 @@
 ;   '("First Name" "Last Name")
 ;   '(15 15)))
 
-;; TODO: make this work
 (define (sqlify-select-and-expand data have-columns want-columns widths expanded-columns)
   (define row-have-columns (cons "Row" have-columns))
   (define row-want-columns (cons "Row" want-columns))
