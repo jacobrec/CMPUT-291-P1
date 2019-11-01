@@ -82,16 +82,15 @@
     (define ws widths)
     (set! widths
       (for/list ([s should-show])
-        (define x 20)
+        (define x 0)
         (when s
           (set! x (car ws))
           (set! ws (cdr ws)))
         x)))
   (define vwidths (list->vector widths))
-  (displayln widths)
 
   ; Display header
-  (sqlify-display-column should-show ;should-show needs fixing, I think
+  (sqlify-display-column should-show
     (list->vector columns-have) vwidths printer)
   (define ends (for/list ([w widths]) 0))
   (set! ends (list-set ends 0 -1))
@@ -114,9 +113,16 @@
     (for/lists (printers fill) ([t should-show]
                                 [w widths]
                                 [n (sequence-map to-string data)])
-      (values (printer n w) (make-string w #\ ))))
+      (if t
+        (values (printer n w) (make-string w #\ ))
+        (values (cons "" '()) ""))))
+
   (for ([line (apply zip-longest #f row)])
-    (for ([col line][f fills]) (printf "│~a" (if col col f)))
+    (for ([col line]
+          [f fills]
+          [t should-show])
+         (when t
+           (printf "│~a" (if col col f))))
     (displayln "│")))
 
 (define (sqlify-wrap-text text width)
