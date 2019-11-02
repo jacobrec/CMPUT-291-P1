@@ -4,7 +4,7 @@
 UPDATE registrations
     SET expiry =
     CASE
-        WHEN expiry < DATE('now') THEN DATE('now', '+1 year')
+        WHEN expiry <= DATE('now') THEN DATE('now', '+1 year')
         ELSE DATE(expiry, '+1 year')
     END
     WHERE regno = :regno
