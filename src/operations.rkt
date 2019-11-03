@@ -9,48 +9,48 @@
 (define (create-person fname lname)
   (displayln (string-append "Enter details for " fname " " lname))
   (define params (get-dict-from-user '(("Birth Date" "bdate" "date-or-null")
-				       ("Birth Place" "bplace" "text")
-				       ("Address" "address" "text")
-				       ("Phone Number" "phone" "phone-or-null"))))
+                                       ("Birth Place" "bplace" "text")
+                                       ("Address" "address" "text")
+                                       ("Phone Number" "phone" "phone-or-null"))))
   (dict-set! params "fname" fname)
   (dict-set! params "lname" lname)
   (sqlify-exec "src/sql/queries/1_create_person.sql" params))
 
 (define (register-a-birth city)
-  ;Get info about baby
+  ; Get info about baby
   (define regParams (get-dict-from-user '(("First Name" "n_fname" "text-not-null")
-					 ("Last Name" "n_lname" "text-not-null")
-					 ("Gender" "n_gender" "gender")
-					 ("Birth Date" "bdate" "date")
-					 ("Birth Place" "bplace" "text-not-null")
-					 ("Mother's First Name" "m_fname" "text-not-null")
-					 ("Mother's Last Name" "m_lname" "text-not-null")
-					 ("Father's First Name" "f_fname" "text-not-null")
-					 ("Father's Last Name" "f_lname" "text-not-null"))))
+                                          ("Last Name" "n_lname" "text-not-null")
+                                          ("Gender" "n_gender" "gender")
+                                          ("Birth Date" "bdate" "date")
+                                          ("Birth Place" "bplace" "text-not-null")
+                                          ("Mother's First Name" "m_fname" "text-not-null")
+                                          ("Mother's Last Name" "m_lname" "text-not-null")
+                                          ("Father's First Name" "f_fname" "text-not-null")
+                                          ("Father's Last Name" "f_lname" "text-not-null"))))
   (dict-set! regParams "regno" (create-id))
   (dict-set! regParams "regplace" city)
-  ;Check to see if parents exist in people table.  If they don't, make them
-  (cond [(not(sqlify-maybe-row "src/sql/queries/1_find_mother.sql" regParams)) 
-	 (create-person (dict-ref regParams "m_fname") (dict-ref regParams "m_lname"))])
-  (cond [(not(sqlify-maybe-row "src/sql/queries/1_find_father.sql" regParams)) 
-	 (create-person (dict-ref regParams "f_fname") (dict-ref regParams "f_lname"))])
-  ;Create newborn in people table and register the birth
+  ; Check to see if parents exist in people table.  If they don't, make them
+  (cond [(not(sqlify-maybe-row "src/sql/queries/1_find_mother.sql" regParams))
+         (create-person (dict-ref regParams "m_fname") (dict-ref regParams "m_lname"))])
+  (cond [(not(sqlify-maybe-row "src/sql/queries/1_find_father.sql" regParams))
+         (create-person (dict-ref regParams "f_fname") (dict-ref regParams "f_lname"))])
+  ; Create newborn in people table and register the birth
   (sqlify-exec "src/sql/queries/1_register_birth.sql" regParams)
   (sqlify-exec "src/sql/queries/1_create_newborn.sql" regParams))
 
 (define (register-a-marriage city)
   ;Get info from user
   (define regParams (get-dict-from-user '(("Partner 1 - First Name" "p1_fname" "text-not-null")
-					  ("Partner 1 - Last Name" "p1_lname" "text-not-null")
-					  ("Partner 2 - First Name" "p2_fname" "text-not-null")
-					  ("Partner 2 - Last Name" "p2_lname" "text-not-null"))))
+                                          ("Partner 1 - Last Name" "p1_lname" "text-not-null")
+                                          ("Partner 2 - First Name" "p2_fname" "text-not-null")
+                                          ("Partner 2 - Last Name" "p2_lname" "text-not-null"))))
   (dict-set! regParams "regno" (create-id))
   (dict-set! regParams "regplace" city)
   ;Check if partners exist in person table.  If they don't, make them
   (cond [(not(sqlify-maybe-row "src/sql/queries/2_find_partner1.sql" regParams))
-	 (create-person (dict-ref regParams "p1_fname") (dict-ref regParams "p1_lname"))])
+         (create-person (dict-ref regParams "p1_fname") (dict-ref regParams "p1_lname"))])
   (cond [(not(sqlify-maybe-row "src/sql/queries/2_find_partner2.sql" regParams))
-	 (create-person (dict-ref regParams "p2_fname") (dict-ref regParams "p2_lname"))])
+         (create-person (dict-ref regParams "p2_fname") (dict-ref regParams "p2_lname"))])
   (sqlify-exec "src/sql/queries/2_register_marriage.sql" regParams))
 
 (define (renew-vehicle-registration)
@@ -82,9 +82,9 @@
                 (dict-set! newParams "vin" (dict-ref vin "vin"))
                 (dict-set! currOwn "vin" (dict-ref vin "vin"))
                 (sqlify-exec "src/sql/queries/4_void_current.sql" currOwn)
-                (sqlify-exec "src/sql/queries/4_register.sql" newParams)
-            )])
-  )
+                (sqlify-exec "src/sql/queries/4_register.sql" newParams))]))
+
+
 
 (define (process-payment)
   (define tickParams (get-dict-from-user '(("Ticket Number" "tno" "number"))))
@@ -116,9 +116,9 @@
       (define ticks (map vector->list (sqlify-rows "src/sql/queries/6_ticks.sql" driverParams)))
       (for/and ([s (segment ticks 2)])
                (sqlify-display s '("Ticket Number" "Date Issued" "Violation" "Fine" "Registration" "Make" "Model") #:print-styler sqlify-wrap-text)
-               (confirm "See more?")
-               ))
-  )
+               (confirm "See more?"))))
+
+
   (unless abstract (displayln "Could not find the given driver.")))
 
 (define (issue-ticket)
