@@ -38,7 +38,8 @@
   (when show-err
    (cond [(string=? "date" type) (displayln "Invalid input for date, enter YYYY-MM-DD")]
          [(string=? "date-or-today" type) (displayln "Invalid input for date, enter YYYY-MM-DD or leave blank to get todays date")]
-	 [(string=? "gender" type) (displayln "Invalid input for gender, enter M for male, F for female, or O for other")]
+	     [(string=? "gender" type) (displayln "Invalid input for gender, enter M for male, F for female, or O for other")]
+         [(string=? "name" type) (displayln "Invalid input for name, enter first and last names separated by a space")]
          [else (begin (display "Invalid input for type: ") (displayln type))]))
  (define val (prompt word))
  (cond [(and (string=? "date" type) (not (validate-date val))) (prompt-type word type #t)]
@@ -46,6 +47,7 @@
        [(and (string=? "number" type) (not (validate-number val))) (prompt-type word type #t)]
        [(and (string=? "gender" type) (not (validate-gender val))) (prompt-type word type #t)]
        [(and (string=? "text-not-null" type) (equal? "" val)) (prompt-type word type #t)]
+       [(string=? "name" type) (if (validate-name val) (string-split val " ") (prompt-type word type #t))]
        [(string=? "number-ish" type) (if (validate-number val) val (if (non-empty-string? val) (prompt-type word type #t) "%"))]
        [(string=? "text" type) val]
        [(string=? "text-ish" type) (string-append "%" val "%")]
@@ -63,3 +65,8 @@
     (validate-date input)))
 
 (define (validate-gender input)	(regexp-match-exact? #px"^([MmFfOo]{1})$" input))
+
+(define (validate-name input)
+  (let ([names (string-split input " ")])
+    (and (= (length names) 2) (not (equal? "" (car names))) (not (equal? "" (cadr names))))
+      ))
