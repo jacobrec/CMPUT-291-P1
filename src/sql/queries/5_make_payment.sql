@@ -1,2 +1,2 @@
 INSERT INTO payments (tno, pdate, amount) VALUES
-    (:tno, :pdate, :pamt);
+    (:tno, date('now'), :pamt);

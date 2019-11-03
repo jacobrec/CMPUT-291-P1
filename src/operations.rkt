@@ -2,6 +2,8 @@
 
 (require "sql.rkt")
 (require "utils/io.rkt")
+(require "utils/iterutils.rkt")
+(require db)
 (provide (all-defined-out))
 
 (define (register-a-birth city)
@@ -37,20 +39,58 @@
     (displayln "No registration found")))
 
 (define (process-bill-of-sale)
-  void)
+  (define vin (get-dict-from-user '(("vin" "vin" "text-not-null"))))
+  (define currOwn (get-dict-from-user '(("Current Owner's Name" "c" "name"))))
+  (displayln vin)
+  (define allOwners (sqlify-rows "src/sql/queries/4_owner.sql" vin))
+  (displayln allOwners)
+  (cond [(empty? allOwners) (displayln "No registration for the given vin.")]
+        [(not (andmap string-ci=? (vector->list (car allOwners)) (dict-values currOwn)))
+         (displayln "Given owner is not the most recent, aborting.")]
+        [else (let ([newParams (get-dict-from-user '(("New Owner's Name" "n" "name")
+                                                     ("New Plate Number" "pno" "text-not-null")))])
+                (dict-set! newParams "regno" (create-id))
+                (dict-set! newParams "vin" vin)
+                (dict-set! newParams "c_fn" (dict-ref currOwn "c_fn"))
+                (dict-set! newParams "c_ln" (dict-ref currOwn "c_ln"))
+                (sqlify-exec "src/sql/queries/4_transfer.sql" newParams)
+            )])
+  )
 
 (define (process-payment)
   (define tickParams (get-dict-from-user '(("Ticket Number" "tno" "number"))))
-  (define tick (sqlify-maybe-row "src/sql/queries/5_get_ticket.sql" tickParams))
-  (displayln tick)
-  (when tick (sqlify-display (list tick) '("Registration" "Fine" "Violation" "Date")))
-  (when (confirm "Make Payment")
-    (define pParams '())
-    (sqlify-exec "src/sql/queries/5_make_payment.sql" pParams)))
+  (define tick (sqlify-maybe-row "src/sql/queries/5_ticket_info.sql" tickParams))
+  (if tick
+    (begin
+      (sqlify-display (list tick) '("Registration" "Fine" "Violation" "Date")
+                      #:print-styler sqlify-wrap-text)
+      (when (confirm "Make Payment")
+        (define amtLeft (- (vector-ref tick 1) (vector-ref tick 4)))
+        (define prompt (string-append "Amount (" (number->string amtLeft) " Owed)"))
+        (define pParams (get-dict-from-user `((,prompt "pamt" "number"))))
+        (if (< amtLeft (string->number (dict-ref pParams "pamt"))) (displayln "Cannot pay more than what is owed.")
+          (begin
+            (dict-set! pParams "tno" (dict-ref tickParams "tno"))
+            (sqlify-exec "src/sql/queries/5_make_payment.sql" pParams)))))
+    (displayln "No ticket found.")))
 
 
 (define (get-driver-abstract)
-  void)
+  (define driverParams (get-dict-from-user '(("Driver's Name" "d" "name"))))
+  (define abstract (sqlify-maybe-row "src/sql/queries/6_get_abstract.sql" driverParams))
+  (displayln abstract)
+  (when abstract
+    (sqlify-display (list abstract)
+                    '("Tickets Recieved" "Demerit Notices Recieved" "Demerit Points in the Past 2 Years" "Total Demerit Points")
+                    #:print-styler sqlify-wrap-text)
+    (when (confirm "See Ticket Details?")
+      (define ticks (map vector->list (sqlify-rows "src/sql/queries/6_ticks.sql" driverParams)))
+      (for/and ([s (segment ticks 2)])
+               (sqlify-display s '("Ticket Number" "Date Issued" "Violation" "Fine" "Registration" "Make" "Model") #:print-styler sqlify-wrap-text)
+               (confirm "See more?")
+               ))
+  )
+  (unless abstract (displayln "Could not find the given driver.")))
 
 (define (issue-ticket)
   (define regParams (get-dict-from-user '(("Registration Number" "regno" "number"))))
