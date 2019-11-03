@@ -38,14 +38,20 @@
   (when show-err
    (cond [(string=? "date" type) (displayln "Invalid input for date, enter YYYY-MM-DD")]
          [(string=? "date-or-today" type) (displayln "Invalid input for date, enter YYYY-MM-DD or leave blank to get todays date")]
+	 [(string=? "date-or-null" type) (displayln "Invalid input for date, enter YYYY-MM-DD or leave blank")]
+	 [(string=? "phone" type) (displayln "Invalid input for phone, enter ###-###-####")]
+	 [(string=? "phone-or-null" type) (displayln "Invalid input for phone, enter ###-###-#### or leave blank")]
 	 [(string=? "gender" type) (displayln "Invalid input for gender, enter M for male, F for female, or O for other")]
          [else (begin (display "Invalid input for type: ") (displayln type))]))
  (define val (prompt word))
  (cond [(and (string=? "date" type) (not (validate-date val))) (prompt-type word type #t)]
        [(and (string=? "date-or-today" type) (not (validate-date-or-today val))) (prompt-type word type #t)]
+       [(and (string=? "date-or-null" type) (not (validate-date-or-null val))) (prompt-type word type #t)]
        [(and (string=? "number" type) (not (validate-number val))) (prompt-type word type #t)]
        [(and (string=? "gender" type) (not (validate-gender val))) (prompt-type word type #t)]
        [(and (string=? "text-not-null" type) (equal? "" val)) (prompt-type word type #t)]
+       [(and (string=? "phone" type) (not (validate-phone val))) (prompt-type word type #t)]
+       [(and (string=? "phone-or-null" type) (not (validate-phone val))) (prompt-type word type #t)]
        [(string=? "number-ish" type) (if (validate-number val) val (if (non-empty-string? val) (prompt-type word type #t) "%"))]
        [(string=? "text" type) val]
        [(string=? "text-ish" type) (string-append "%" val "%")]
@@ -61,5 +67,18 @@
   (or
     (not (non-empty-string? input))
     (validate-date input)))
+
+(define (validate-date-or-null input)
+  (or
+    (not (non-empty-string? input))
+    (validate-date input)))
+
+(define (validate-phone input)
+  (regexp-match-exact? #px"\\d\\d\\d-\\d\\d\\d-\\d\\d\\d\\d" input))
+
+(define (validate-phone-or-null input)
+  (or
+    (not (non-empty-string? input))
+    (validate-phone input)))
 
 (define (validate-gender input)	(regexp-match-exact? #px"^([MmFfOo]{1})$" input))
