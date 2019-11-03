@@ -72,19 +72,17 @@
 (define (process-bill-of-sale)
   (define vin (get-dict-from-user '(("vin" "vin" "text-not-null"))))
   (define currOwn (get-dict-from-user '(("Current Owner's Name" "c" "name"))))
-  (displayln vin)
   (define allOwners (sqlify-rows "src/sql/queries/4_owner.sql" vin))
-  (displayln allOwners)
   (cond [(empty? allOwners) (displayln "No registration for the given vin.")]
         [(not (andmap string-ci=? (vector->list (car allOwners)) (dict-values currOwn)))
          (displayln "Given owner is not the most recent, aborting.")]
         [else (let ([newParams (get-dict-from-user '(("New Owner's Name" "n" "name")
                                                      ("New Plate Number" "pno" "text-not-null")))])
                 (dict-set! newParams "regno" (create-id))
-                (dict-set! newParams "vin" vin)
-                (dict-set! newParams "c_fn" (dict-ref currOwn "c_fn"))
-                (dict-set! newParams "c_ln" (dict-ref currOwn "c_ln"))
-                (sqlify-exec "src/sql/queries/4_transfer.sql" newParams)
+                (dict-set! newParams "vin" (dict-ref vin "vin"))
+                (dict-set! currOwn "vin" (dict-ref vin "vin"))
+                (sqlify-exec "src/sql/queries/4_void_current.sql" currOwn)
+                (sqlify-exec "src/sql/queries/4_register.sql" newParams)
             )])
   )
 
