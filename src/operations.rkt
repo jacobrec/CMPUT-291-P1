@@ -2,8 +2,17 @@
 
 (require "sql.rkt")
 (require "utils/io.rkt")
-(require "utils/person_functions.rkt")
 (provide (all-defined-out))
+
+(define (create-person fname lname)
+  (displayln (string-append "Enter details for " fname " " lname))
+  (define params (get-dict-from-user '(("Birth Date" "bdate" "date-or-null")
+				       ("Birth Place" "bplace" "text")
+				       ("Address" "address" "text")
+				       ("Phone Number" "phone" "phone-or-null"))))
+  (dict-set! params "fname" fname)
+  (dict-set! params "lname" lname)
+  (sqlify-exec "src/sql/queries/1_create_person.sql" params))
 
 (define (register-a-birth city)
   ;Get info about baby
@@ -18,39 +27,29 @@
 					 ("Father's Last Name" "f_lname" "text-not-null"))))
   (dict-set! regParams "regno" (create-id))
   (dict-set! regParams "regplace" city)
+  ;Check to see if parents exist in people table.  If they don't, make them
+  (cond [(not(sqlify-maybe-row "src/sql/queries/1_find_mother.sql" regParams)) 
+	 (create-person (dict-ref regParams "m_fname") (dict-ref regParams "m_lname"))])
+  (cond [(not(sqlify-maybe-row "src/sql/queries/1_find_father.sql" regParams)) 
+	 (create-person (dict-ref regParams "f_fname") (dict-ref regParams "f_lname"))])
+  ;Create newborn in people table and register the birth
   (sqlify-exec "src/sql/queries/1_register_birth.sql" regParams)
-  ;Check to see if parents exist in people table
-  (define momParams (make-hash))
-  (dict-set! momParams "fname" (dict-ref regParams "m_fname"))
-  (dict-set! momParams "lname" (dict-ref regParams "m_lname"))
-  (define mother (find-person momParams))
-  (define dadParams (make-hash))
-  (dict-set! dadParams "fname" (dict-ref regParams "f_fname"))
-  (dict-set! dadParams "lname" (dict-ref regParams "f_lname"))
-  (define father (find-person dadParams))
-  ;If they don't, make them
-  (if (not(mother))
-    (begin(
-      (create-person momParams)
-      (set! mother (find-person momParams))))
-    void)
-  (if (not(father))
-    (begin(
-      (create-person dadParams)
-      (set! father (find-person dadParams))))
-    void)
-  ;Create newborn in people table
-  (define newborn (make-hash))
-  (dict-set! newborn "fname" (dict-ref regParams "n_fname"))
-  (dict-set! newborn "lname" (dict-ref regParams "n_lname"))
-  (dict-set! newborn "bdate" (dict-ref regParams "bdate"))
-  (dict-set! newborn "bplace" (dict-ref regParams "bplace"))
-  (dict-set! newborn "address" (dict-ref mother "address"))
-  (dict-set! newborn "phone" (dict-ref mother "phone"))
-  (insert-person newborn))
+  (sqlify-exec "src/sql/queries/1_create_newborn.sql" regParams))
 
 (define (register-a-marriage city)
-  void)
+  ;Get info from user
+  (define regParams (get-dict-from-user '(("Partner 1 - First Name" "p1_fname" "text-not-null")
+					  ("Partner 1 - Last Name" "p1_lname" "text-not-null")
+					  ("Partner 2 - First Name" "p2_fname" "text-not-null")
+					  ("Partner 2 - Last Name" "p2_lname" "text-not-null"))))
+  (dict-set! regParams "regno" (create-id))
+  (dict-set! regParams "regplace" city)
+  ;Check if partners exist in person table.  If they don't, make them
+  (cond [(not(sqlify-maybe-row "src/sql/queries/2_find_partner1.sql" regParams))
+	 (create-person (dict-ref regParams "p1_fname") (dict-ref regParams "p1_lname"))])
+  (cond [(not(sqlify-maybe-row "src/sql/queries/2_find_partner2.sql" regParams))
+	 (create-person (dict-ref regParams "p2_fname") (dict-ref regParams "p2_lname"))])
+  (sqlify-exec "src/sql/queries/2_register_marriage.sql" regParams))
 
 (define (renew-vehicle-registration)
   void)

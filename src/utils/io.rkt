@@ -51,7 +51,7 @@
        [(and (string=? "gender" type) (not (validate-gender val))) (prompt-type word type #t)]
        [(and (string=? "text-not-null" type) (equal? "" val)) (prompt-type word type #t)]
        [(and (string=? "phone" type) (not (validate-phone val))) (prompt-type word type #t)]
-       [(and (string=? "phone-or-null" type) (not (validate-phone val))) (prompt-type word type #t)]
+       [(and (string=? "phone-or-null" type) (not (validate-phone-or-null val))) (prompt-type word type #t)]
        [(string=? "number-ish" type) (if (validate-number val) val (if (non-empty-string? val) (prompt-type word type #t) "%"))]
        [(string=? "text" type) val]
        [(string=? "text-ish" type) (string-append "%" val "%")]

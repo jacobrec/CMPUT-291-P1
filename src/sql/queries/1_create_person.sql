@@ -1,2 +1,2 @@
-INSERT INTO persons (fname, lname, bdate, address, phone)
-VALUES (:fname, :lname, :bdate, :address, :phone);
+INSERT INTO persons (fname, lname, bdate, bplace, address, phone)
+VALUES (:fname, :lname, :bdate, :bplace, :address, :phone)
