@@ -12,8 +12,8 @@
     (display (+ 1 i))
     (display ") ")
     (displayln (car o)))
-  (flush-output)
 
+  (flush-output)
   (define val (string-downcase (read-line)))
   (define nval (string->number val 10 'number-or-false))
   (define fn

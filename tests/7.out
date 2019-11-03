@@ -1,0 +1,46 @@
+Please sign in to use App:
+1) login
+2) exit
+Username: Password: Enter a command:
+1) issue a ticket
+2) find a car owner
+3) signout
+Registration Number: │  First Name   │   Last Name   │     Make      │     Model     │     Color     │     Year      │
+╞═══════════════╪═══════════════╪═══════════════╪═══════════════╪═══════════════╪═══════════════╡
+│     Sage      │      Fox      │   Chevrolet   │    Camaro     │      red      │     1969      │
+Issue Ticket: y/n
+Please type y/n
+Please type y/n
+Please type y/n
+Please type y/n
+Please type y/n
+Please type y/n
+Enter a command:
+1) issue a ticket
+2) find a car owner
+3) signout
+Registration Number: │  First Name   │   Last Name   │     Make      │     Model     │     Color     │     Year      │
+╞═══════════════╪═══════════════╪═══════════════╪═══════════════╪═══════════════╪═══════════════╡
+│    Speedy     │  McSpeedFace  │     Zoom      │     Fast      │      Red      │     2017      │
+Issue Ticket: y/n
+Violation Date: Invalid input for date, enter YYYY-MM-DD or leave blank to get todays date
+Violation Date: Invalid input for date, enter YYYY-MM-DD or leave blank to get todays date
+Violation Date: Invalid input for date, enter YYYY-MM-DD or leave blank to get todays date
+Violation Date: Invalid input for date, enter YYYY-MM-DD or leave blank to get todays date
+Violation Date: Invalid input for date, enter YYYY-MM-DD or leave blank to get todays date
+Violation Date: Violation Text: Fine Amount: Enter a command:
+1) issue a ticket
+2) find a car owner
+3) signout
+Registration Number: Registration not found, try again
+Registration Number: │  First Name   │   Last Name   │     Make      │     Model     │     Color     │     Year      │
+╞═══════════════╪═══════════════╪═══════════════╪═══════════════╪═══════════════╪═══════════════╡
+│    Speedy     │  McSpeedFace  │     Zoom      │     Fast      │      Red      │     2017      │
+Issue Ticket: y/n
+Violation Date: Violation Text: Fine Amount: Enter a command:
+1) issue a ticket
+2) find a car owner
+3) signout
+Please sign in to use App:
+1) login
+2) exit

@@ -24,7 +24,7 @@
 (provide sqlify-wrap-text)
 
 (define (create-id)
-  (define byt (crypto-random-bytes 16))
+  (define byt (crypto-random-bytes 8))
   (define res 0)
   (for ([b (bytes->list byt)])
     (set! res (bitwise-ior b (arithmetic-shift res 8))))

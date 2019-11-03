@@ -1,0 +1,6 @@
+regno       fine        violation
+----------  ----------  --------------
+16          -10         Going too fast
+regno       fine        violation     vdate
+----------  ----------  ------------  ----------
+16          1000        Being a jerk  2016-08-08
