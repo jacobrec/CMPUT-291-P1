@@ -38,11 +38,11 @@
   (when show-err
    (cond [(string=? "date" type) (displayln "Invalid input for date, enter YYYY-MM-DD")]
          [(string=? "date-or-today" type) (displayln "Invalid input for date, enter YYYY-MM-DD or leave blank to get todays date")]
-	     [(string=? "gender" type) (displayln "Invalid input for gender, enter M for male, F for female, or O for other")]
+	 [(string=? "gender" type) (displayln "Invalid input for gender, enter M for male, F for female, or O for other")]
          [(string=? "name" type) (displayln "Invalid input for name, enter first and last names separated by a space")]
-	     [(string=? "date-or-null" type) (displayln "Invalid input for date, enter YYYY-MM-DD or leave blank")]
-	     [(string=? "phone" type) (displayln "Invalid input for phone, enter ###-###-####")]
-	     [(string=? "phone-or-null" type) (displayln "Invalid input for phone, enter ###-###-#### or leave blank")]
+	 [(string=? "date-or-null" type) (displayln "Invalid input for date, enter YYYY-MM-DD or leave blank")]
+	 [(string=? "phone" type) (displayln "Invalid input for phone, enter ###-###-####")]
+	 [(string=? "phone-or-null" type) (displayln "Invalid input for phone, enter ###-###-#### or leave blank")]
          [else (begin (display "Invalid input for type: ") (displayln type))]))
  (define val (prompt word))
  (cond [(and (string=? "date" type) (not (validate-date val))) (prompt-type word type #t)]
