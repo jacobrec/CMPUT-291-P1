@@ -1,2 +1,2 @@
 SELECT fname, lname, bdate, bplace, address, phone FROM persons
-WHERE fname = :p2_fname AND lname = :p2_lname
+WHERE UPPER(fname) = UPPER(:p2_fname) AND UPPER(lname) = UPPER(:p2_lname)
