@@ -174,11 +174,11 @@
     (when (and (string=? type "date-or-today")
                (not (non-empty-string? val)))
       (dict-set! params-out key (sqlify-date (current-date))))
-    (when (string=? type "name") 
+    (when (string=? type "name")
       (dict-set! params-out (string-append key "_fn") (car (dict-ref params-out key)))
       (dict-set! params-out (string-append key "_ln") (cadr (dict-ref params-out key)))
-      (dict-remove! params-out key)
-      ))
+      (dict-remove! params-out key)))
+
   params-out)
 ; (get-dict-from-user '(("Make" . "make") ("Model" . "model")))
 

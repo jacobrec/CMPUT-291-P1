@@ -31,16 +31,16 @@
   (dict-set! regParams "regplace" city)
   ; Check if the newborn's name is already taken, and cancel registration if it is
   (cond [(sqlify-maybe-row "src/sql/queries/1_check_name.sql" regParams)
-	 (displayln(string-append "The name " (dict-ref regParams "n_fname") " " (dict-ref regParams "n_lname") " is taken, please select a different name for your child"))]
-	[else (begin
-	  ; Check to see if parents exist in people table.  If they don't, make them
-	  (cond [(not(sqlify-maybe-row "src/sql/queries/1_find_mother.sql" regParams))
-		 (create-person (dict-ref regParams "m_fname") (dict-ref regParams "m_lname"))])
-	  (cond [(not(sqlify-maybe-row "src/sql/queries/1_find_father.sql" regParams))
-		 (create-person (dict-ref regParams "f_fname") (dict-ref regParams "f_lname"))])
-	  ; Create newborn in people table and register the birth
-	  (sqlify-exec "src/sql/queries/1_register_birth.sql" regParams)
-	  (sqlify-exec "src/sql/queries/1_create_newborn.sql" regParams))]))
+         (displayln(string-append "The name " (dict-ref regParams "n_fname") " " (dict-ref regParams "n_lname") " is taken, please select a different name for your child"))
+         	[else (begin
+             ; Check to see if parents exist in people table.  If they don't, make them
+                (cond [(not(sqlify-maybe-row "src/sql/queries/1_find_mother.sql" regParams))
+                       (create-person (dict-ref regParams "m_fname") (dict-ref regParams "m_lname"))])
+                (cond [(not(sqlify-maybe-row "src/sql/queries/1_find_father.sql" regParams))
+                       (create-person (dict-ref regParams "f_fname") (dict-ref regParams "f_lname"))])
+             ; Create newborn in people table and register the birth
+                (sqlify-exec "src/sql/queries/1_register_birth.sql" regParams)
+                (sqlify-exec "src/sql/queries/1_create_newborn.sql" regParams))]]))
 
 (define (register-a-marriage city)
   ; Get info from user
