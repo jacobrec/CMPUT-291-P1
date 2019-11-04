@@ -78,12 +78,14 @@
          (displayln "Given owner is not the most recent, aborting.")]
         [else (let ([newParams (get-dict-from-user '(("New Owner's Name" "n" "name")
                                                      ("New Plate Number" "pno" "text-not-null")))])
-                (dict-set! newParams "regno" (create-id))
-                (dict-set! newParams "vin" (dict-ref vin "vin"))
-                (dict-set! currOwn "vin" (dict-ref vin "vin"))
-                (sqlify-exec "src/sql/queries/4_void_current.sql" currOwn)
-                (sqlify-exec "src/sql/queries/4_register.sql" newParams))]))
-
+                (if (sqlify-maybe-row "src/sql/queries/4_verify_new.sql" newParams)
+                  (begin
+                    (dict-set! newParams "regno" (create-id))
+                    (dict-set! newParams "vin" (dict-ref vin "vin"))
+                    (dict-set! currOwn "vin" (dict-ref vin "vin"))
+                    (sqlify-exec "src/sql/queries/4_void_current.sql" currOwn)
+                    (sqlify-exec "src/sql/queries/4_register.sql" newParams))
+                  (displayln "New owner does not exist, aborting.")))]))
 
 
 (define (process-payment)
@@ -106,22 +108,26 @@
 
 (define (get-driver-abstract)
   (define driverParams (get-dict-from-user '(("Driver's Name" "d" "name"))))
-  (define abstract (sqlify-maybe-row "src/sql/queries/6_get_abstract.sql" driverParams))
-  (displayln abstract)
-  (when abstract
-    (sqlify-display (list abstract)
-                    '("Tickets Recieved" "Demerit Notices Recieved" "Demerit Points in the Past 2 Years" "Total Demerit Points")
+  (define fullAbstract (sqlify-maybe-row "src/sql/queries/6_full_abstract.sql" driverParams))
+  (define twoYrAbstract (sqlify-maybe-row "src/sql/queries/6_2yr_abstract.sql" driverParams))
+  (displayln fullAbstract)
+  (when fullAbstract
+    (sqlify-display (list fullAbstract)
+                    '("Tickets Recieved" "Demerit Notices Recieved" "Total Demerit Points")
                     #:print-styler sqlify-wrap-text)
-    (define tickCount (vector-ref abstract 0))
+    (displayln "")
+    (sqlify-display (list twoYrAbstract)
+                    '("Tickets (Last 2 Years)" "Demerit Notices (Last 2 Years)" "Demerit Points (Last 2 Years)")
+                    #:print-styler sqlify-wrap-text)
+    (define tickCount (vector-ref fullAbstract 0))
     (when (> tickCount 0)
       (define ticks (map vector->list (sqlify-rows "src/sql/queries/6_ticks.sql" driverParams)))
       (for/fold ([shown 0]) ([s (segment ticks 2)])
                 #:break (or (>= shown tickCount) (not (confirm (if (= shown 0 ) "See Ticket Details?" "See more?"))))
                (sqlify-display s '("Ticket Number" "Date Issued" "Violation" "Fine" "Registration" "Make" "Model") #:print-styler sqlify-wrap-text)
                (+ shown 2))))
+  (unless fullAbstract (displayln "Could not find the given driver.")))
 
-
-  (unless abstract (displayln "Could not find the given driver.")))
 
 (define (issue-ticket)
   (define regParams (get-dict-from-user '(("Registration Number" "regno" "number"))))
