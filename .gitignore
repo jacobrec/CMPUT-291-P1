@@ -7,3 +7,7 @@
 .#*.scm
 
 *.db
+
+/Report/*
+!/Report/Report.tex
+!/Report/Report.pdf
