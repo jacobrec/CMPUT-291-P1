@@ -4,6 +4,7 @@
 (require "utils/io.rkt")
 (require "utils/iterutils.rkt")
 (require db)
+(require srfi/19)
 (provide (all-defined-out))
 
 (define (create-person fname lname)
@@ -29,18 +30,22 @@
                                           ("Father's Last Name" "f_lname" "text-not-null"))))
   (dict-set! regParams "regno" (create-id))
   (dict-set! regParams "regplace" city)
-  ; Check if the newborn's name is already taken, and cancel registration if it is
-  (cond [(sqlify-maybe-row "src/sql/queries/1_check_name.sql" regParams)
-         (displayln(string-append "The name " (dict-ref regParams "n_fname") " " (dict-ref regParams "n_lname") " is taken, please select a different name for your child"))]
-        [else (begin
-            ; Check to see if parents exist in people table.  If they don't, make them
-               (cond [(not(sqlify-maybe-row "src/sql/queries/1_find_mother.sql" regParams))
-                      (create-person (dict-ref regParams "m_fname") (dict-ref regParams "m_lname"))])
-               (cond [(not(sqlify-maybe-row "src/sql/queries/1_find_father.sql" regParams))
-                      (create-person (dict-ref regParams "f_fname") (dict-ref regParams "f_lname"))])
-            ; Create newborn in people table and register the birth
-               (sqlify-exec "src/sql/queries/1_register_birth.sql" regParams)
-               (sqlify-exec "src/sql/queries/1_create_newborn.sql" regParams))]))
+  ;Convert the input date from ISO8601 to a date object,
+  ;and compare to now to make sure the date isn't in the future
+  (if (time>? (date->time-utc (string->date (dict-ref regParams "bdate") "~Y-~m-~d")) (date->time-utc (current-date)))
+    (displayln "Cannot have a birth in the future.")
+    ; Check if the newborn's name is already taken, and cancel registration if it is
+    (cond [(sqlify-maybe-row "src/sql/queries/1_check_name.sql" regParams)
+           (displayln(string-append "The name " (dict-ref regParams "n_fname") " " (dict-ref regParams "n_lname") " is taken, please select a different name for your child"))]
+          [else (begin
+              ; Check to see if parents exist in people table.  If they don't, make them
+                 (cond [(not(sqlify-maybe-row "src/sql/queries/1_find_mother.sql" regParams))
+                        (create-person (dict-ref regParams "m_fname") (dict-ref regParams "m_lname"))])
+                 (cond [(not(sqlify-maybe-row "src/sql/queries/1_find_father.sql" regParams))
+                        (create-person (dict-ref regParams "f_fname") (dict-ref regParams "f_lname"))])
+              ; Create newborn in people table and register the birth
+                 (sqlify-exec "src/sql/queries/1_register_birth.sql" regParams)
+                 (sqlify-exec "src/sql/queries/1_create_newborn.sql" regParams))])))
 
 (define (register-a-marriage city)
   ; Get info from user
@@ -75,6 +80,7 @@
     (displayln "No registration found")))
 
 (define (process-bill-of-sale)
+  ;Get user input and make sure the given driver is the most recent owner
   (define vin (get-dict-from-user '(("vin" "vin" "text-not-null"))))
   (define currOwn (get-dict-from-user '(("Current Owner's Name" "c" "name"))))
   (define allOwners (sqlify-rows "src/sql/queries/4_owner.sql" vin))
@@ -83,6 +89,7 @@
          (displayln "Given owner is not the most recent, aborting.")]
         [else (let ([newParams (get-dict-from-user '(("New Owner's Name" "n" "name")
                                                      ("New Plate Number" "pno" "text-not-null")))])
+                ;If the new owner exists, void the old registration and create the new one
                 (if (sqlify-maybe-row "src/sql/queries/4_verify_new.sql" newParams)
                   (begin
                     (dict-set! newParams "regno" (create-id))
@@ -96,18 +103,25 @@
 (define (process-payment)
   (define tickParams (get-dict-from-user '(("Ticket Number" "tno" "number"))))
   (define tick (sqlify-maybe-row "src/sql/queries/5_ticket_info.sql" tickParams))
+  ;If no ticket was found then the ticket number doesn't exist.
   (if tick
-    (begin
-      (sqlify-display (list tick) '("Registration" "Fine" "Violation" "Date")
-                      #:print-styler sqlify-wrap-text)
-      (when (confirm "Make Payment")
-        (define amtLeft (- (vector-ref tick 1) (vector-ref tick 4)))
-        (define prompt (string-append "Amount (" (number->string amtLeft) " Owed)"))
-        (define pParams (get-dict-from-user `((,prompt "pamt" "number"))))
-        (if (< amtLeft (string->number (dict-ref pParams "pamt"))) (displayln "Cannot pay more than what is owed.")
-          (begin
-            (dict-set! pParams "tno" (dict-ref tickParams "tno"))
-            (sqlify-exec "src/sql/queries/5_make_payment.sql" pParams)))))
+    ;If the last payment is on today's date, abort.
+    (if (string=? (vector-ref tick 5) (date->string (current-date) "~1"))
+      (displayln "Cannot process more than one payment for a ticket on the same day.")
+      ;Otherwise, display the ticket info and confirm that the user wants to make a payment
+      (begin
+        (sqlify-display (list tick) '("Registration" "Fine" "Violation" "Date")
+                        #:print-styler sqlify-wrap-text)
+        (when (confirm "Make Payment")
+          ;Calculate the remaining dues and make sure the user can't pay more
+          (define amtLeft (- (vector-ref tick 1) (vector-ref tick 4)))
+          (define prompt (string-append "Amount (" (number->string amtLeft) " Owed)"))
+          (define pParams (get-dict-from-user `((,prompt "pamt" "number"))))
+          (if (< amtLeft (string->number (dict-ref pParams "pamt"))) (displayln "Cannot pay more than what is owed.")
+            ;If the amount is valid, complete the payment
+            (begin
+              (dict-set! pParams "tno" (dict-ref tickParams "tno"))
+              (sqlify-exec "src/sql/queries/5_make_payment.sql" pParams))))))
     (displayln "No ticket found.")))
 
 
@@ -115,7 +129,8 @@
   (define driverParams (get-dict-from-user '(("Driver's Name" "d" "name"))))
   (define fullAbstract (sqlify-maybe-row "src/sql/queries/6_full_abstract.sql" driverParams))
   (define twoYrAbstract (sqlify-maybe-row "src/sql/queries/6_2yr_abstract.sql" driverParams))
-  (displayln fullAbstract)
+  ;If the driver was found, display all info and ask to show ticket info
+  ;if the user has been ticketed before
   (when fullAbstract
     (sqlify-display (list fullAbstract)
                     '("Tickets Recieved" "Demerit Notices Recieved" "Total Demerit Points")
@@ -126,11 +141,13 @@
                     #:print-styler sqlify-wrap-text)
     (define tickCount (vector-ref fullAbstract 0))
     (when (> tickCount 0)
+      ;Get all tickets, if the user has been ticketed
       (define ticks (map vector->list (sqlify-rows "src/sql/queries/6_ticks.sql" driverParams)))
-      (for/fold ([shown 0]) ([s (segment ticks 2)])
-                #:break (or (>= shown tickCount) (not (confirm (if (= shown 0 ) "See Ticket Details?" "See more?"))))
+      ;Show them in groups of 5, asking the user if they want to see more each time
+      (for/fold ([shown 0]) ([s (segment ticks 5)])
+                #:break (or (>= shown tickCount) (not (confirm (if (= shown 0) "See Ticket Details?" "See more?"))))
                (sqlify-display s '("Ticket Number" "Date Issued" "Violation" "Fine" "Registration" "Make" "Model") #:print-styler sqlify-wrap-text)
-               (+ shown 2))))
+               (+ shown 5))))
   (unless fullAbstract (displayln "Could not find the given driver.")))
 
 
