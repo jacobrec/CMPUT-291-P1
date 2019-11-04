@@ -83,7 +83,7 @@
     (not (non-empty-string? input))
     (validate-phone input)))
 
-(define (validate-gender input)    	(regexp-match-exact? #px"^([MmFfOo]{1})$" input))
+(define (validate-gender input) (regexp-match-exact? #px"^([MmFfOo]{1})$" input))
 
 (define (validate-name input)
   (let ([names (string-split input " ")])
