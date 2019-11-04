@@ -1,1 +1,1 @@
-racket src/main.rkt "$@"
+rlwrap racket src/main.rkt "$@"
