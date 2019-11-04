@@ -10,7 +10,7 @@
   (when user
     (begin
       (option-screen
-        (string=? "o" (vector-ref user 2))
+        (vector-ref user 2)
         (vector-ref user 3))
       (welcome))))
 
