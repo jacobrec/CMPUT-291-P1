@@ -40,6 +40,13 @@ This screen has 7 options for the user to pick from. The options are
 \verb|process a payment|, \verb|get driver abstract|, and \verb|signout|.
 
 
+Renew a vehicle registration first asks the user for a valid registration
+number for a vehicle. Once the user has entered a valid registration number the
+registration will be renewed. If the registration number is invalid, it will
+display that it could not find the registration and return you to the options.
+On a successful renewal the new expiry date is chosen with a complex algorithm,
+where if it is expired, it will be set to one year from todays date, and if it
+is not expired, it will be set to one year from the current expiry date.
 
 
 \subsection{Traffic Officer Screen}
