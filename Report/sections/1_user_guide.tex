@@ -41,27 +41,27 @@ This screen has 7 options for the user to pick from. The options are
 
 Register a birth will request the following information in order: first name of
 the newborn, last name of the newborn, the gender of the newborn, the birth
-date, the birth place, the mother's first name, the mother's last name, the 
+date, the birth place, the mother's first name, the mother's last name, the
 father's first name, and the father's last name.  None of this information may
 be excluded, and all inputs are case insensitive.  The comination of first and
 last names for the child cannot already be taken.  The gender must be either
-"M" for male, "F" for female, or "O" for other.  The birth date must be in 
-valid date format.  If the mother or father are not already registered in the 
-persons database, the user will be requested to add additional information for 
-them, including their birth date, birth place, address, and phone number.  Any 
-of these values may be empty.  The birth date must be in valid date format if 
-supplied, and the phone number must be in valid phone number format if supplied.  
+"M" for male, "F" for female, or "O" for other.  The birth date must be in
+valid date format.  If the mother or father are not already registered in the
+persons database, the user will be requested to add additional information for
+them, including their birth date, birth place, address, and phone number.  Any
+of these values may be empty.  The birth date must be in valid date format if
+supplied, and the phone number must be in valid phone number format if supplied.
 Once the parents have been added, the newborn will be created in the persons
-table, using the same address and phone number as the mother.  Finally, the 
-registration for the birth is created.  
+table, using the same address and phone number as the mother.  Finally, the
+registration for the birth is created.
 
-Register a marriage requests the first and last names for both partners.  The 
+Register a marriage requests the first and last names for both partners.  The
 inputs are case insensitive.  If either of the partners do not exist in the
 persons table the user will be prompted to fill in their details.  This includes
-their birth date, birth place, address, and phone number.  Any of these values 
-may be empty.  The birth date must be in valid date format, and the phone number 
-in valid phone number format if they are supplied.  Once the partners are 
-confirmed to exist in the persons database, the marriage will be registered.  
+their birth date, birth place, address, and phone number.  Any of these values
+may be empty.  The birth date must be in valid date format, and the phone number
+in valid phone number format if they are supplied.  Once the partners are
+confirmed to exist in the persons database, the marriage will be registered.
 
 Renew a vehicle registration first asks the user for a valid registration
 number for a vehicle. Once the user has entered a valid registration number the
@@ -71,15 +71,12 @@ On a successful renewal the new expiry date is chosen with a complex algorithm,
 where if it is expired, it will be set to one year from todays date, and if it
 is not expired, it will be set to one year from the current expiry date.
 
-Process bill of sale...
-
-Process a payment... 
-
-Get driver abstract...
-
+Process bill of sale
+Process a payment.
+Get driver abstract
 Signout signs out the currently signed in user, bringing them back to the main
 menu where they can sign in again with the same or a different account, or exit
-the program if they so wish.  
+the program if they so wish.
 
 
 \subsection{Traffic Officer Screen}
