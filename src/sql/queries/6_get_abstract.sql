@@ -1,14 +1,17 @@
-SELECT ticks, demerits, twoYrsPts, allPts
-FROM (SELECT COUNT(*) AS ticks
-    FROM tickets LEFT OUTER JOIN registrations USING (regno)
-    GROUP BY fname, lname
-    HAVING UPPER(fname)=UPPER(:d_fn) AND UPPER(lname)=UPPER(:d_ln)),
-    (SELECT COUNT(*) AS demerits, IFNULL(SUM(points), 0) AS allPts
-    FROM demeritNotices
-    GROUP BY fname, lname
-    HAVING UPPER(fname)=UPPER(:d_fn) AND UPPER(lname)=UPPER(:d_ln)),
-    (SELECT IFNULL(SUM(points), 0) AS twoYrsPts
-    FROM demeritNotices
-    GROUP BY fname, lname
-    HAVING UPPER(fname)=UPPER(:d_fn) AND UPPER(lname)=UPPER(:d_ln)
-    AND ddate>=date('now', '-2 years'));
+SELECT ticks, IFNULL(demerits, 0), IFNULL(allPts, 0), IFNULL(twoYrsPts, 0)
+FROM (SELECT COUNT(tno) AS ticks, UPPER(fname) AS fname, UPPER(lname) AS lname
+     FROM registrations LEFT OUTER JOIN tickets USING (regno)
+     GROUP BY UPPER(fname), UPPER(lname))
+     LEFT OUTER JOIN
+     (SELECT COUNT(*) AS demerits, SUM(points) AS allPts, UPPER(fname) AS fname, UPPER(lname) AS lname
+     FROM demeritNotices
+     GROUP BY UPPER(fname), UPPER(lname))
+     USING (fname, lname)
+     LEFT OUTER JOIN
+     (SELECT SUM(points) AS twoYrsPts, UPPER(fname) AS fname, UPPER(lname) AS lname
+     FROM demeritNotices
+     GROUP BY UPPER(fname), UPPER(lname)
+     HAVING ddate>=date('now', '-2 years'))
+     USING (fname, lname)
+GROUP BY fname, lname
+HAVING UPPER(fname)=UPPER(:d_fn) AND UPPER(lname)=UPPER(:d_ln);

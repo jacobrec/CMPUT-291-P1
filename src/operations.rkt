@@ -112,11 +112,13 @@
     (sqlify-display (list abstract)
                     '("Tickets Recieved" "Demerit Notices Recieved" "Demerit Points in the Past 2 Years" "Total Demerit Points")
                     #:print-styler sqlify-wrap-text)
-    (when (confirm "See Ticket Details?")
+    (define tickCount (vector-ref abstract 0))
+    (when (> tickCount 0)
       (define ticks (map vector->list (sqlify-rows "src/sql/queries/6_ticks.sql" driverParams)))
-      (for/and ([s (segment ticks 2)])
+      (for/fold ([shown 0]) ([s (segment ticks 2)])
+                #:break (or (>= shown tickCount) (not (confirm (if (= shown 0 ) "See Ticket Details?" "See more?"))))
                (sqlify-display s '("Ticket Number" "Date Issued" "Violation" "Fine" "Registration" "Make" "Model") #:print-styler sqlify-wrap-text)
-               (confirm "See more?"))))
+               (+ shown 2))))
 
 
   (unless abstract (displayln "Could not find the given driver.")))
