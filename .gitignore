@@ -11,3 +11,4 @@
 /Report/*
 !/Report/*.tex
 !/Report/*.dot
+!/Report/Makefile
