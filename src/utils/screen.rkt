@@ -14,17 +14,29 @@
     (displayln (car o)))
 
   (flush-output)
-  (define val (string-downcase (read-line)))
+  (define val (input-or-exit))
+  (if val
+    (screen-val title options val)
+    #f))
+
+(define (screen-val title options val)
   (define nval (string->number val 10 'number-or-false))
   (define fn
     (if (and nval (> nval 0) (>= (length options) nval))
      (cdr (list-ref options (- nval 1)))
      (and (dict-has-key? options val) (dict-ref options val))))
 
-  (if fn
-      (fn)
-      (screen title options #t)))
+  (with-handlers ([exn:fail?
+                    (lambda (e)
+                      (parameterize-break #t
+                        (screen title options #f)))])
+    (if fn
+        (fn)
+        (screen title options #t))))
 
+(define (input-or-exit)
+  (define val (read-line))
+  (if (not (eof-object? val)) (string-downcase val) #f))
 
 
 

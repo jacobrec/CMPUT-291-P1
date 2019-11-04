@@ -14,4 +14,7 @@
         (vector-ref user 3))
       (welcome))))
 
-(welcome)
+(with-handlers ([exn:break?
+                  (lambda (e)
+                    (displayln "Bye Bye"))])
+  (welcome))
