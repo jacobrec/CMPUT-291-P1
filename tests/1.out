@@ -9,26 +9,9 @@ Username: Password: Enter a command:
 5) process a payment
 6) get a driver abstract
 7) signout
-First Name: 
-Last Name: 
-Gender: 
-Birth Date: 
-Birth Place: 
-Mother's First Name: 
-Mother's Last Name: 
-Father's First Name: 
-Father's Last Name: 
-Enter details for Mommy Mom
-Birth Date: 
-Birth Place:
-Address: 
-Phone Number: 
-Enter details for Daddy Dad
-Birth Date:
-Birth Place:
-Address:
-Phone Number:
-Enter a command:
+First Name: Last Name: Gender: Birth Date: Birth Place: Mother's First Name: Mother's Last Name: Father's First Name: Father's Last Name: Enter details for Mommy Mom
+Birth Date: Birth Place: Address: Phone Number: Enter details for Daddy Dad
+Birth Date: Birth Place: Address: Phone Number: Enter a command:
 1) register a birth
 2) register a marriage
 3) renew a vehicle registration
@@ -36,15 +19,7 @@ Enter a command:
 5) process a payment
 6) get a driver abstract
 7) signout
-First Name: 
-Last Name: 
-Gender: 
-Birth Date: 
-Birth Place: 
-Mother's First Name: 
-Mother's Last Name: 
-Father's First Name: 
-Father's Last Name: 
+First Name: Last Name: Gender: Birth Date: Birth Place: Mother's First Name: Mother's Last Name: Father's First Name: Father's Last Name: 
 The name Baby BoY is taken, please select a different name for your child
 Enter a command:
 1) register a birth
@@ -54,21 +29,8 @@ Enter a command:
 5) process a payment
 6) get a driver abstract
 7) signout
-First Name: 
-Last Name: 
-Gender: 
-Birth Date: 
-Birth Place: 
-Mother's First Name: 
-Mother's Last Name: 
-Father's First Name: 
-Father's Last Name: 
-Enter details for Evil Witch
-Birth Date: 
-Birth Place: 
-Address:
-Phone Number:
-Enter a command:
+First Name: Last Name: Gender: Birth Date: Birth Place: Mother's First Name: Mother's Last Name: Father's First Name: Father's Last Name: Enter details for Evil Witch
+Birth Date: Birth Place: Address: Phone Number: Enter a command:
 1) register a birth
 2) register a marriage
 3) renew a vehicle registration
