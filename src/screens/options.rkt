@@ -4,6 +4,11 @@
 (require "../utils/screen.rkt")
 (provide option-screen)
 
+(define (other-screen)
+  (screen
+    "You are not a traffic officer, or a registry agent. Please leave"
+    `(("signout" . ,(lambda () #f)))))
+
 (define (officer-screen)
   (screen "Enter a command:"
     `(("issue a ticket" . ,issue-ticket)
@@ -21,9 +26,10 @@
       ("signout" . ,(lambda () #f)))))
 
 
-(define (option-screen is-officer city)
-  (and (if is-officer
-         (officer-screen)
-         (agent-screen city))
-       (option-screen is-officer city)))
+(define (option-screen user-type city)
+  (and (cond
+         [(string=? "o" user-type) (officer-screen)]
+         [(string=? "a" user-type) (agent-screen city)]
+         [else (other-screen)])
+       (option-screen user-type city)))
 
