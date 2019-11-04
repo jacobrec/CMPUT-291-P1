@@ -1,8 +1,9 @@
+SECS=$(wildcard sections/*.tex)
 build: clean
 	make Report.pdf
 	make pclean
 
-Report.pdf: Report.tex user_guide.tex use_flow_dot.png
+Report.pdf: Report.tex $(SECS) use_flow_dot.png
 	pdflatex Report.tex
 
 %_dot.png: %.dot

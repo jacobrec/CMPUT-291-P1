@@ -9,6 +9,7 @@
 *.db
 
 /Report/*
+!/Report/sections/
 !/Report/*.tex
 !/Report/*.dot
 !/Report/Makefile
