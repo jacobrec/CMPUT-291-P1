@@ -9,8 +9,8 @@ Reload recreates the database, or creates one if its not there
 - [ ] **Create Test data** This is super important
 - [x] Implement Login screen
 - [x] Implement Option menu screen
-- [ ] Implement Option: Register a birth
-- [ ] Implement Option: Register a marriage
+- [x] Implement Option: Register a birth
+- [x] Implement Option: Register a marriage
 - [x] Implement Option: Renew a vehicle registration
 - [ ] Implement Option: Process a bill of sale
 - [ ] Implement Option: Process a payment
