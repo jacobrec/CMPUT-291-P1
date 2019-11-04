@@ -9,5 +9,5 @@
 *.db
 
 /Report/*
-!/Report/Report.tex
-!/Report/Report.pdf
+!/Report/*.tex
+!/Report/*.dot

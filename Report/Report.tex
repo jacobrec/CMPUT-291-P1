@@ -1,5 +1,6 @@
 \documentclass{article}
 \usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
 
 \title{Design Document}
 \author{Jacob Reckhard \and Navras Kamal \and Radomir Wasowski}
@@ -10,8 +11,7 @@
 Is it worth writing a small intro? Your design document must be type-written and is saved as a PDF and be included in your submission. Your design document cannot exceed 4 pages. The design document should include the following sections. The design document should also include a documentation of any decision you have made which is not in the project specification or any coding you have done beyond or different from what is required. Your design document will not include the source code. However your source code will be inspected for source code quality (whether the code is easy to read and if data processing is all done in SQL and not in the application) and self-documentation (whether the code is properly commented).
 
 \section{User Guide}
-a general overview of your system with a small user guide\\
-The general overview of the system gives a high level introduction and may include a diagram showing the flow of data between different components; this can be useful for both users and developers of your application.
+\input{user_guide.tex}
 
 \section{Design}
 a detailed design of your software with a focus on the components required to deliver the major functions of your application\\

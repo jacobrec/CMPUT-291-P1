@@ -1,0 +1,29 @@
+graph {
+    // Nodes
+    login [label=<Login Screen> shape=rect];
+    officer [label=<Traffic Officer Screen> shape=rect];
+    agent [label=<Registry Agent Screen> shape=rect];
+
+    c1 [label=<Register a birth>];
+    c2 [label=<Register a marriage>];
+    c3 [label=<Renew a vehicle registration>];
+    c4 [label=<Process a bill of sale>];
+    c5 [label=<Process a payment>];
+    c6 [label=<Get a driver abstract>];
+    c7 [label=<Issue a ticket>];
+    c8 [label=<Find a car owner>];
+
+    // Edges
+    login -- officer;
+    login -- agent;
+
+    agent -- c1;
+    agent -- c2;
+    agent -- c3;
+    agent -- c4;
+    agent -- c5;
+    agent -- c6;
+
+    officer -- c7;
+    officer -- c8;
+}
