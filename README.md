@@ -1,5 +1,9 @@
 # CMPUT-291-P1
 
+Navras Kamal navras
+Jacob Rechard reckhard
+Radomir Wasowski wasowski
+
 Our 291 project
 
 To run, go `./test.sh reload` or `./test.sh`
