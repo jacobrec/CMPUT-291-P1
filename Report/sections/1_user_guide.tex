@@ -71,9 +71,24 @@ On a successful renewal the new expiry date is chosen with a complex algorithm,
 where if it is expired, it will be set to one year from todays date, and if it
 is not expired, it will be set to one year from the current expiry date.
 
-Process bill of sale
-Process a payment.
-Get driver abstract
+Process bill of sale asks the user for the vin number of the vehicle to be sold
+and the name of the current owner of the vehicle. If the vin is invalid or the
+given owner is not the most recent, the user will be informed and the process
+will abort. Otherwise, the name for the new owner and the ew plate number will
+be prompted. If the new owner does not exist in the database, the sale will
+abort, otherwise the old registration will have it's expiry set to today and
+a new registration will be generated.
+
+Process a payment asks for a valid ticket number. If is does not exist, the user
+will be informed and the command will exit. If a payment for the selected ticket
+has already been processed today, then user will be in formed and the process will
+abort. Otherwise, the ticket information will be displayed and the user will be
+asked to confirm if they want to complete the payment. If so, the amount owed will
+be displayed and the user can enter a number. If the number is greater that what is
+owed, the process will exit. Otherwise, the payment will be entered.
+
+Get driver abstract.
+
 Signout signs out the currently signed in user, bringing them back to the main
 menu where they can sign in again with the same or a different account, or exit
 the program if they so wish.
